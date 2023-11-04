@@ -37,7 +37,7 @@ const Products = () => {
             </div>
             <div className="col-md-9">
                 <h1 className="text-center">All Products</h1>
-                <div className="d-flex" style={{ height: '90vh'}}>
+                <div className="d-flex flex-wrap" style={{ height: '90vh'}}>
                 {product.map(p => (
                 <Link to={`/dashboard/admin/products/${p?.slug}`} style={{ textDecoration: 'none', color: 'black'}} >
                 <div className="card m-2" style={{width: '15rem', height: '21rem', overflow: 'hidden'}}>

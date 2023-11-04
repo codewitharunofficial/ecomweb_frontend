@@ -30,7 +30,7 @@ const Login = () => {
           token: res.data.token
         })
         localStorage.setItem('auth', JSON.stringify(res.data))
-        navigate(locate.state ||`/dashboard/${auth?.user?.role !==1 ? 'user' : 'admin'}`);
+        navigate(locate.state ||`/`);
       } else {
         toast.error(res?.data.message)
         
