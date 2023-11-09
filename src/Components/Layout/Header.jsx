@@ -48,12 +48,12 @@ const Header = () => {
                     <a className="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       {auth?.user?.name}
                     </a>
-                    <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                      <li>
+                    <li className="dropdown-menu" aria-labelledby="navbarDropdown">
+                      
                         <NavLink className="dropdown-item" to={`dashboard/${auth?.user?.role === 1? 'admin' : 'user'}`}>Dashboard</NavLink>
                         <NavLink onClick={handleLogOut} className="dropdown-item" to="/user/login">LogOut</NavLink>
-                      </li>
-                    </div></li>     </>)}
+                      
+                    </li></li>     </>)}
 
             <li className="nav-item">
               <Badge className='mt-1' count = {cart?.length} showZero >

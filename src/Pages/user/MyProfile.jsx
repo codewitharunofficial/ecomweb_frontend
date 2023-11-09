@@ -85,7 +85,7 @@ const MyProfile = () => {
   
   <div className="form-group ">
     <label htmlFor="inputAddress2">Address</label>
-    <input onChange={(e)=> setAddress(e.target.value)} value={address} type="text" className="form-control" id="phone" placeholder="125/2, Kund-Dahina Road, khol, Rewari, Haryana " />
+    <textarea htmlFor='address' onChange={(e)=> setAddress(e.target.value)} value={address} type="text" className="form-control" id="phone" placeholder="125/2, Kund-Dahina Road, khol, Rewari, Haryana " />
   </div>
     <div className="form-group ">
       <label htmlFor="inputCity">Name</label>
