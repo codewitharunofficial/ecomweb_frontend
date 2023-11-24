@@ -17,7 +17,11 @@ const Cart = () => {
   const [auth] = useAuth();
   const [loading, setLoading] = useState(false);
   const [amount, setAmount] = useState('');
+<<<<<<< HEAD
   const [paymentId, setPaymentId] = useState("");
+=======
+
+>>>>>>> f37cc6f61a0b635ad1a2a44e9f8b1a5964c013e8
   
   const navigate = useNavigate();
 
@@ -54,6 +58,7 @@ const Cart = () => {
 
 
 
+<<<<<<< HEAD
   const checkoutHandler = async () => {
     const {data: {key}} = await axios.get(`${process.env.REACT_APP_API}/api/get-key`);
    const {data: {order}} = await axios.post(`${process.env.REACT_APP_API}/api/v1/payment/create-order`, {cart, auth});
@@ -101,6 +106,41 @@ const Cart = () => {
 
 }
 
+=======
+
+  const checkoutHandler = async () => {
+         const {data: {key}} = await axios.get(`${process.env.REACT_APP_API}/api/get-key`);
+        const {data: {order}} = await axios.post(`${process.env.REACT_APP_API}/api/v1/payment/create-order`, {cart, auth});
+        
+
+        const options = {
+          key: key, // Enter the Key ID generated from the Dashboard
+          amount: amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+          currency: "INR",
+          name: "Shopyse",
+          description: "Test Transaction",
+          image: "https://instagram.fixc5-2.fna.fbcdn.net/v/t51.2885-19/393164812_243020152085613_3408388935756034719_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fixc5-2.fna.fbcdn.net&_nc_cat=109&_nc_ohc=WN4UwOoiTBsAX-u50fK&edm=AOQ1c0wBAAAA&ccb=7-5&oh=00_AfDxWdTz4RHJpLYJ7HE0qQpoAEpFhSAm6mvgC0sSQRz5AQ&oe=65516BAA&_nc_sid=8b3546",
+          order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+          callback_url: `${process.env.REACT_APP_API}/api/v1/payment/confirm-payment`, 
+          prefill: {
+              name: auth?.user?.name,
+              email: auth?.user?.email,
+              contact: auth?.user?.phone
+          },
+          notes: {
+              address: auth?.user?.address
+          },
+          theme: {
+              color: "#121212"
+          }
+      };
+      
+      const razor = new window.Razorpay(options);
+      razor.open();
+      
+
+  }
+>>>>>>> f37cc6f61a0b635ad1a2a44e9f8b1a5964c013e8
 
 
   
@@ -153,12 +193,20 @@ const Cart = () => {
             <h5>Total: {totalPrice()}</h5>
             )}
             { cart & auth?.user?.address ? (
+<<<<<<< HEAD
             <div className="col-md-3 cart-button">
+=======
+            <div className="col-md-3">
+>>>>>>> f37cc6f61a0b635ad1a2a44e9f8b1a5964c013e8
               {auth?.user?.address}
               <button className='btn btn-warning mt-2' onClick={() => navigate('/dashboard/user/myprofile', {state: '/user/cart'})}>Update</button>
             </div>
           ) : (
+<<<<<<< HEAD
            cart.length  ? (
+=======
+           cart & auth?.token ? (
+>>>>>>> f37cc6f61a0b635ad1a2a44e9f8b1a5964c013e8
               <button className='btn btn-warning mt-2' onClick={() => navigate('/dashboard/user/myprofile', {state: '/user/cart'})}>Update</button>
             ) : (
               <button className='btn btn-success mt-2' hidden={auth.token} onClick={() => navigate('/user/login', {state: ('/user/cart')})}>Login to proceed</button>

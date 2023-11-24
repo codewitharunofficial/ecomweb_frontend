@@ -53,7 +53,11 @@ const Header = () => {
                         <NavLink className="dropdown-item" to={`dashboard/${auth?.user?.role === 1? 'admin' : 'user'}`}>Dashboard</NavLink>
                         <NavLink onClick={handleLogOut} className="dropdown-item" to="/user/login">LogOut</NavLink>
                       
+<<<<<<< HEAD
                     </li></ul>     </>)}
+=======
+                    </li></li>     </>)}
+>>>>>>> f37cc6f61a0b635ad1a2a44e9f8b1a5964c013e8
 
             <li className="nav-item">
               <Badge className='mt-1' count = {cart?.length} showZero >
