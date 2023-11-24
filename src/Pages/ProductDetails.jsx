@@ -69,18 +69,18 @@ const ProductDetails = () => {
   return (
     <Layout>
       <div className="row container m-2">
-        <div className="col-md-6" style={{ marginTop: '20px',  border: '1px solid gray', borderRadius: '2px', height: '400px'}}>
-          <img
+        <div className="col-md-6 Product-Detail" style={{ marginTop: '40px', height: '400px',}}>
+          <img className="Product-Image"
             
-            style={{objectFit: 'fir'}}
-            width={"520px"}
+            style={{border: '1px solid gray', borderRadius: '2px'}}
+            width={"436px"}
             height={'400px'}
             src={`${process.env.REACT_APP_API}/api/v1/products/get-photo/${id}`}
             alt=""
           />
         </div>
         <div className="col-md-6" style={{ fontWeight: "bold", width: '100%', height: 'auto', marginTop: '20px', padding: '20px', gap: '10px'}}>
-          <h1 className="text-center">Product Details</h1>
+          <h1 style={{textDecoration: 'underline'}} className="text-center">Product Details</h1>
           <div>
             <h5>Product Name: {name}</h5>
             <h6>
@@ -96,6 +96,7 @@ const ProductDetails = () => {
           <button onClick={() => {setCart([...cart, product]); toast.success('Item Added To Cart'); localStorage.setItem('cart', JSON.stringify([...cart, product]))}} className="btn btn-secondary mb-2">Add To Cart</button>
         </div>
       </div>
+      <hr style={{borderColor: '#000', borderWidth: '2px', width: '100%' }} />
 
       <div className="row container m-2">
         <h4 className="text-center">Similar Products</h4>

@@ -193,7 +193,7 @@ const filters = async () => {
           <button className="btn btn-danger p-1 mt-2 ml-2 w-50" onClick={() => window.location.reload()}>Reset Filters</button>
           </div>
         </div>
-        <div className="col-md-9">
+        <div className="col-md-9 Home">
           <div className="d-flex flex-wrap ">
             {!products ? (
 
