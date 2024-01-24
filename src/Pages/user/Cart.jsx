@@ -18,8 +18,9 @@ const Cart = () => {
   const [loading, setLoading] = useState(false);
   const [amount, setAmount] = useState('');
 
+
   const [paymentId, setPaymentId] = useState("");
-  
+
   const navigate = useNavigate();
 
 
@@ -52,8 +53,6 @@ const Cart = () => {
       console.log(error)
     }
   }
-
-
 
   const checkoutHandler = async () => {
     const {data: {key}} = await axios.get(`${process.env.REACT_APP_API}/api/get-key`);
@@ -101,8 +100,6 @@ const Cart = () => {
  
 
 }
-
-
 
   
 
@@ -154,12 +151,16 @@ const Cart = () => {
             <h5>Total: {totalPrice()}</h5>
             )}
             { cart & auth?.user?.address ? (
+
             <div className="col-md-3 cart-button">
+
               {auth?.user?.address}
               <button className='btn btn-warning mt-2' onClick={() => navigate('/dashboard/user/myprofile', {state: '/user/cart'})}>Update</button>
             </div>
           ) : (
+
            cart.length  ? (
+
               <button className='btn btn-warning mt-2' onClick={() => navigate('/dashboard/user/myprofile', {state: '/user/cart'})}>Update</button>
             ) : (
               <button className='btn btn-success mt-2' hidden={auth.token} onClick={() => navigate('/user/login', {state: ('/user/cart')})}>Login to proceed</button>
