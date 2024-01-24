@@ -1,19 +1,25 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Layout from '../../Components/Layout/Layout'
 import { useCart } from '../../context/Cart';
 import { useAuth } from '../../context/auth';
-import { useNavigate } from 'react-router-dom';
+import { redirect, useNavigate } from 'react-router-dom';
 import  * as emoji from 'node-emoji';
-import { FaRemoveFormat } from 'react-icons/fa';
-import Item from 'antd/es/list/Item';
 import toast from 'react-hot-toast';
-// import { FaSmile } from 'react-icons/fa';
+// import DropIn from 'braintree-web-drop-in-react'
+import axios from 'axios';
+import Loader from '../../Components/Layout/Loader';
+// import Razorpay from 'razorpay';
 
 const Cart = () => {
 
 
   const [cart, setCart] = useCart();
-  const [auth, setAuth] = useAuth();
+  const [auth] = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [amount, setAmount] = useState('');
+
+  const [paymentId, setPaymentId] = useState("");
+  
   const navigate = useNavigate();
 
 
@@ -37,7 +43,7 @@ const Cart = () => {
   const totalPrice = () => {
     try {
       let total = 0
-    cart?.map((item) => {total = total + item.price});
+    cart?.map((item) => (total = total + item.price));
     return total.toLocaleString("en-IN", {
       style: 'currency',
       currency: 'INR'
@@ -47,6 +53,58 @@ const Cart = () => {
     }
   }
 
+
+
+  const checkoutHandler = async () => {
+    const {data: {key}} = await axios.get(`${process.env.REACT_APP_API}/api/get-key`);
+   const {data: {order}} = await axios.post(`${process.env.REACT_APP_API}/api/v1/payment/create-order`, {cart, auth});
+   const {data} = await axios.post(`${process.env.REACT_APP_API}/api/v1/payment/create-order`, {cart, auth});
+   console.log(data);   
+
+   const options = {
+     key: key, // Enter the Key ID generated from the Dashboard
+     amount: amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+     currency: "INR",
+     name: "Shopyse",
+     description: "Test Transaction",
+     image: "",
+     order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+     handler: async (response) => {
+       setPaymentId(response.razorpay_payment_id);
+      //  console.log(response.razorpay_payment_id);
+      const verifyUrl = `${process.env.REACT_APP_API}/api/v1/payment/confirm-payment`;
+      const {data} = await axios.post(verifyUrl, response);
+      console.log(data);
+      if(data?.success) {
+        toast.success(data?.message + `reference No. ${data?.payment?.paymentId}`);
+      }
+     },
+     prefill: {
+         name: auth?.user?.name,
+         email: auth?.user?.email,
+         contact: auth?.user?.phone
+     },
+     notes: {
+         address: auth?.user?.address
+     },
+     theme: {
+         color: "#121212"
+     }
+ };
+ 
+ const razor = new window.Razorpay(options);
+ razor.open();
+
+ localStorage.removeItem("cart");
+ navigate(`/dashboard/user/orders/${paymentId}`);
+ console.log(paymentId);
+ 
+
+}
+
+
+
+  
 
   return (
     <Layout>
@@ -61,7 +119,7 @@ const Cart = () => {
             <div className="row">
           <div className="col-md-9 mt-3">
               {cart?.map(p => (
-                <div className="row mb-2 p-2 card flex-row" style={{border: '2px solid gray', borderRadius: '3px'}}>
+                <div className="row mb-2 p-2 card flex-row" key={p._id} style={{border: '2px solid gray', borderRadius: '3px'}}>
                   <div className="col-md-6" >
                     <img
                     
@@ -88,13 +146,37 @@ const Cart = () => {
               ))}
             </div>
           </div>
-          <div className="col-md-3 mt-3">
+          <div className="col-md-6 mt-3">
             <h4 className='text-center'>Cart Summary</h4>
-            <p>Total | Checkout | Payment</p>
             <hr style={{ borderWidth: '2px', borderColor: '#000'}} />
+            {!cart.length ? ( <h4 className='text-center'>No Items To Show {emoji.emojify(`:robot:`)}</h4> ) : (
+
             <h5>Total: {totalPrice()}</h5>
+            )}
+            { cart & auth?.user?.address ? (
+            <div className="col-md-3 cart-button">
+              {auth?.user?.address}
+              <button className='btn btn-warning mt-2' onClick={() => navigate('/dashboard/user/myprofile', {state: '/user/cart'})}>Update</button>
+            </div>
+          ) : (
+           cart.length  ? (
+              <button className='btn btn-warning mt-2' onClick={() => navigate('/dashboard/user/myprofile', {state: '/user/cart'})}>Update</button>
+            ) : (
+              <button className='btn btn-success mt-2' hidden={auth.token} onClick={() => navigate('/user/login', {state: ('/user/cart')})}>Login to proceed</button>
+            )
+          )}
+
+          <div className="mt-2">
+                   
+                <button type='submit' hidden={!cart.length || !auth.token} onClick={checkoutHandler} className='btn btn-primary'>Checkout</button>
+                
+
+            
+          </div>
           </div>
           
+          
+
           </div>
         </div>
     </Layout>
