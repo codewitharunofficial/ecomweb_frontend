@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom'
 const AdminMenu = () => {
     return (
         <div>
-            <div className="text-center">
+            <div className="text-center mt-4 ml-2">
                 <div className="list-group">
                     <h4>DashBoard</h4>
                     <NavLink to="/dashboard/admin/users" className="list-group-item list-group-item-action">All Users</NavLink>

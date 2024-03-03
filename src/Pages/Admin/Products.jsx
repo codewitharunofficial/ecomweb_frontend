@@ -37,10 +37,10 @@ const Products = () => {
             </div>
             <div className="col-md-9">
                 <h1 className="text-center">All Products</h1>
-                <div className="d-flex flex-wrap" style={{ height: '90vh'}}>
+                <div className="d-flex flex-wrap" style={{ minHeight: '90vh'}}>
                 {product.map(p => (
                 <Link to={`/dashboard/admin/products/${p?.slug}`} style={{ textDecoration: 'none', color: 'black'}} >
-                <div className="card m-2" style={{width: '15rem', height: '21rem', overflow: 'hidden'}}>
+                <div className="card m-2" style={{height: '21rem', maxWidth: '15rem'}}>
                 <img className="card-img-top" src={`${process.env.REACT_APP_API}/api/v1/products/get-photo/${p._id}`} alt={p.name} height='50%' width={'50%'} />
                 <div className="card-body">
                   <h5 className="card-title">{p.name}</h5>

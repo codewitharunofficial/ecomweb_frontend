@@ -93,7 +93,7 @@
   .card {
     width: 95%;
     margin-left: 7px;
-    
+    align-self: center;
   }
   .order {
     margin-top: 20px;
@@ -128,54 +128,7 @@
  .order{
   width: 100%;
  }
-}
 
-
-
-
-@media only screen and (max-width: 768px) {
-  .menu {
-    width: 90%;
-  }
-
-  .card {
-    width: 95%;
-    margin-left: 7px;
-    
-  }
-  .order {
-    margin-top: 20px;
-  }
-  .body{
-    width: 100%;
-    margin-right: 0;
-  }
-  .navbar{
-    width: 100%;
-  }
-
- .Product-Image{
-      width: 100%;
- }
- .Product-Detail {
-  padding: 20px;
- }
- .Home {
-  margin-left: 0;
-  margin-top: 15%;
- }
-
- .btn{
-  align-self: center;
- }
- .card-profile {
-  margin-top: 3em;
-  margin-left: 1.5em;
- }
-
- .order{
-  width: 100%;
- }
 }
 
 

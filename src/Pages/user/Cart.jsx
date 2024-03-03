@@ -17,10 +17,11 @@ const Cart = () => {
   const [auth] = useAuth();
   const [loading, setLoading] = useState(false);
   const [amount, setAmount] = useState('');
+  const [initiating, setInitiating] = useState(false);
 
 
   const [paymentId, setPaymentId] = useState("");
-
+  
   const navigate = useNavigate();
 
 
@@ -32,7 +33,7 @@ const Cart = () => {
       myCart.splice(index, 1);
       setCart(myCart);
       toast.success("Item Removed From Cart");
-      localStorage.setItem('cart', JSON.stringify(myCart))
+      localStorage.setItem('cart', JSON.stringify(myCart));
 
      } catch (error) {
       console.log(error)
@@ -54,20 +55,23 @@ const Cart = () => {
     }
   }
 
+
+
   const checkoutHandler = async () => {
+    setInitiating(true);
     const {data: {key}} = await axios.get(`${process.env.REACT_APP_API}/api/get-key`);
    const {data: {order}} = await axios.post(`${process.env.REACT_APP_API}/api/v1/payment/create-order`, {cart, auth});
    const {data} = await axios.post(`${process.env.REACT_APP_API}/api/v1/payment/create-order`, {cart, auth});
-   console.log(data);   
-
+   console.log(data);
+      setInitiating(false);
    const options = {
-     key: key, // Enter the Key ID generated from the Dashboard
-     amount: amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+     key: key, 
+     amount: amount, 
      currency: "INR",
      name: "Shopyse",
      description: "Test Transaction",
      image: "",
-     order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+     order_id: order.id, 
      handler: async (response) => {
        setPaymentId(response.razorpay_payment_id);
       //  console.log(response.razorpay_payment_id);
@@ -97,12 +101,11 @@ const Cart = () => {
  localStorage.removeItem("cart");
  navigate(`/dashboard/user/orders/${paymentId}`);
  console.log(paymentId);
- 
 
 }
 
   
-
+console.log(cart);
   return (
     <Layout>
         <div className="container">
@@ -125,7 +128,7 @@ const Cart = () => {
                       alt={p.name}
                       height={'200px'}
                       width={'200px'}
-                                          />
+ />
                       </div>
                   <div className="col-md-6">
                     <h4 className='mt-2'>{p.name}</h4>
@@ -151,16 +154,12 @@ const Cart = () => {
             <h5>Total: {totalPrice()}</h5>
             )}
             { cart & auth?.user?.address ? (
-
             <div className="col-md-3 cart-button">
-
               {auth?.user?.address}
               <button className='btn btn-warning mt-2' onClick={() => navigate('/dashboard/user/myprofile', {state: '/user/cart'})}>Update</button>
             </div>
           ) : (
-
-           cart.length  ? (
-
+           cart.length > 0 && auth?.user ? (
               <button className='btn btn-warning mt-2' onClick={() => navigate('/dashboard/user/myprofile', {state: '/user/cart'})}>Update</button>
             ) : (
               <button className='btn btn-success mt-2' hidden={auth.token} onClick={() => navigate('/user/login', {state: ('/user/cart')})}>Login to proceed</button>
@@ -169,7 +168,7 @@ const Cart = () => {
 
           <div className="mt-2">
                    
-                <button type='submit' hidden={!cart.length || !auth.token} onClick={checkoutHandler} className='btn btn-primary'>Checkout</button>
+                <button type='submit' hidden={!cart.length || !auth.token} onClick={checkoutHandler} className='btn btn-primary'>{initiating ? (<Loader />) : "Checkout"}</button>
                 
 
             

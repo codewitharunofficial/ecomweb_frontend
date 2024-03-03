@@ -137,7 +137,7 @@ const filters = async () => {
     <Layout title="Shopease - HomePage - Best Offers">
 
 <h1 className="text-center mb-3" style={{ color: 'black'}}><Link className="navbar-brand" style={{ color: 'black', fontFamily: 'Playfair Display , serif', fontSize: '24px'}} to="/"> <FaShopify />ShopEase</Link></h1>
-          <div className="m-3">
+          <div className="m-3" style={{alignSelf: 'center'}} >
       <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">
   <ol className="carousel-indicators">
     <li data-target="#carouselExampleIndicators" data-slide-to={0} className="active" />
@@ -167,6 +167,7 @@ const filters = async () => {
 
           </div>
 <hr className="mr-3" style={{borderColor: '#000', borderWidth: '2px', width: '100%' }} />
+   <div className="wrapper" style={{maxWidth: '95%'}} >
 
       <div className="row mt-3">
         <div className="col-md-2">
@@ -190,11 +191,11 @@ const filters = async () => {
           </Radio.Group>
           </div>
           <div className="d-flex flex-column">
-          <button className="btn btn-danger p-1 mt-2 ml-2 w-50" onClick={() => window.location.reload()}>Reset Filters</button>
+          <button className="btn btn-danger p-1 mt-2 ml-4 w-50" onClick={() => window.location.reload()}>Reset Filters</button>
           </div>
         </div>
-        <div className="col-md-9 Home">
-          <div className="d-flex flex-wrap ">
+        <div className="col-md-8 Home " >
+          <div className="d-flex flex-wrap gap-20" style={{alignItems: 'center'}} >
             {!products ? (
 
                 <Loader />
@@ -203,25 +204,23 @@ const filters = async () => {
               products.map((p) => (
                 
                   <div
-                    className="card m-2 col-md-3" style={{border: '1px solid gray', borderRadius: '2px'}} key={p._id}
+                    className="card col-md-3 m-2" style={{border: '1px solid gray', borderRadius: '2px', height: '22rem', marginBottom: 20, }} key={p._id}
                   >
                     <Link to={`/products/${p.slug}`} >
-                      <div style={{ borderBottom: '1px solid gray', padding: '10px'}}
+                      <div style={{ borderBottom: '1px solid gray', padding: '5px'}}
 >
                     <img
                       className="card-img-top p-2"
                       src={`${process.env.REACT_APP_API}/api/v1/products/get-photo/${p._id}`}
                       alt={p.name}
-                      height={'200px'}
-                                          />
+                      height='50%'
+                      width={'50%'}
+                      style={{maxHeight: '400px'}} />
                     </div>
                     </Link>
                     <div className="card-body">
-                      <h5 className="card-title">{p.name.slice(0, 15)}...</h5>
-                      <h5 className="price">{p.price.toLocaleString("en-IN", { style:  "currency", currency: "INR"})}</h5>
-                      <p className="card-text">
-                        {p.description.slice(0, 30)}...
-                      </p>
+                      <p>{p.name.slice(0, 15)}...</p>
+                      <p className="price">{p.price.toLocaleString("en-IN", { style:  "currency", currency: "INR"})}</p>
                     </div>
                   </div>
               ))
@@ -236,6 +235,7 @@ const filters = async () => {
         </div>
         
       </div>
+   </div>
     </Layout>
   );
 };
