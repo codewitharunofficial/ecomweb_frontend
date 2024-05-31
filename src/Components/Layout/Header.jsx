@@ -22,7 +22,7 @@ const Header = () => {
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light" style={{ background: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,114,121,1) 0%, rgba(0,212,255,1) 100%)' }}>
+      <nav className="navbar navbar-expand-lg navbar-light bg-light" style={{ background: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,114,121,1) 0%, rgba(0,212,255,1) 100%)', position: 'fixed', top: 0, width: '100%', zIndex: 1000}}>
 
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon" />

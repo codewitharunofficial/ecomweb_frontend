@@ -94,6 +94,7 @@
     width: 95%;
     margin-left: 7px;
     align-self: center;
+    height: 100%;
   }
   .order {
     margin-top: 20px;
@@ -129,6 +130,25 @@
   width: 100%;
  }
 
+ .card-img-top{
+  width: 100%;
+  height: 15rem;
+ }
+
+ .loadmore{
+  width: 100%;
+  align-self: center;
+ }
+
+ .wrapper-fluid{
+  align-items: center;
+  justify-content: center;
+ }
+
+ .menu{
+  align-items: center;
+  width: 100%;
+ }
 }
 
 

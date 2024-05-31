@@ -17,7 +17,7 @@ const Orders = () => {
   const getOrders = async () => {
     try {
 
-      const { data: {Order} } = await axios.get(`${process.env.REACT_APP_API}/api/v1/orders/all-orders`);
+      const { data: {Order} } = await axios.post(`${process.env.REACT_APP_API}/api/v1/orders/all-orders`, {userId: auth?.user?._id});
       if (Order) {
            setOrders(Order);
            console.log(orders);
@@ -36,17 +36,16 @@ const Orders = () => {
 
   return (
     <Layout title='Ecommerce App - Orders'>
-      <div className="container-fluid m-3 p-3">
-        <div className="row">
-          <div className="col-md-2 menu" >
+      <div className="wrapper-fluid m-md-3 p-3" >
+        <div className="row user">
+          <div className="col-md-3 menu " >
             <UserMenu />
           </div>
 
-          
-          <div className="col-md-8 ml-md-5 mt-3 order" >
-          <h1 className="text-center mb-4">
+          <div className="col-md-7 ml-md-5 mt-3 order" >
+          <h3 className="text-center mb-4">
             All Orders
-          </h1>
+          </h3>
           {
             orders.length > 0 ? (
               orders?.map((o, i) => {
@@ -58,7 +57,7 @@ const Orders = () => {
                          <th className='col-1'>Status</th>
                          <th className='col-1'>Buyer</th>
                          <th className='col-1'>Date</th>
-                         <th className='col-1'>Qty</th>
+
                        </tr>
                      </thead>
                      
@@ -68,7 +67,7 @@ const Orders = () => {
                          <td>{o.status}</td>
                          <td>{o?.buyers?.name}</td>
                          <td>{moment(o?.createdAt).fromNow()}</td>
-                         <td>{o?.products?.length}</td>
+
                        </tr>
                      </tbody>
                    </table>
@@ -94,6 +93,8 @@ const Orders = () => {
                 currency: "INR",
               })}
             </h6>
+            <p style={{color: o?.payment === "Completed" ? "green" : "red"}} >Payment: {o?.payment}</p>
+            <p>Quantity: {o?.products?.length}</p>
             {/* <button onClick={() => removeCartItem(p._id)} className='btn btn-danger'>Remove</button> */}
                   </div>
                 </div>

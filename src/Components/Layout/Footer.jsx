@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 const Footer = () => {
   return (
-    <div className='footer' style={{background: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,114,121,1) 0%, rgba(0,212,255,1) 100%)'}}>
+    <div className='footer' style={{background: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,114,121,1) 0%, rgba(0,212,255,1) 100%)', position: 'fixed', top: '110vh', width: '100%'}}>
      <h4 className='text-center'>
       All Right Reserved &copy;CodeWithArun
      </h4>

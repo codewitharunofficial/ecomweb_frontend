@@ -108,7 +108,7 @@ const filters = async () => {
 
   //for filters
   useEffect(() => {
-   if(checked.length || radio.length) filters();
+   if(checked.length || radio.length){filters();}
     
   }, [checked.length, radio.length]);
 
@@ -167,7 +167,7 @@ const filters = async () => {
 
           </div>
 <hr className="mr-3" style={{borderColor: '#000', borderWidth: '2px', width: '100%' }} />
-   <div className="wrapper" style={{maxWidth: '95%'}} >
+   <div className="wrapper p-10" style={{maxWidth: '100%', alignSelf: 'center', overflow: 'hidden', marginBottom: 20}} >
 
       <div className="row mt-3">
         <div className="col-md-2">
@@ -190,7 +190,7 @@ const filters = async () => {
             ))}
           </Radio.Group>
           </div>
-          <div className="d-flex flex-column">
+          <div className="d-flex flex-column flex-md-row">
           <button className="btn btn-danger p-1 mt-2 ml-4 w-50" onClick={() => window.location.reload()}>Reset Filters</button>
           </div>
         </div>
@@ -227,9 +227,9 @@ const filters = async () => {
 
             )}
           </div>
-          <div className="text-center">
+          <div className="loadmore d-flex text-center" style={{ width: '80%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}} >
           {products && products.length < total && (
-            <button className="btn btn-primary mb-2" onClick={(e) => {e.preventDefault(); setPage(page + 1)}}> {loading ? <Loader/> : "Load More"}  </button>
+            <button className="btn btn-primary mb-2 " onClick={(e) => {e.preventDefault(); setPage(page + 1)}}> {loading ? <Loader/> : "Load More"}  </button>
           )}
         </div>
         </div>
