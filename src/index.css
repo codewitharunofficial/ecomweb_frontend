@@ -149,6 +149,13 @@
   align-items: center;
   width: 100%;
  }
+
+ .p-details{
+  position: fixed;
+  bottom: 0%;
+  z-index: 1;
+  margin-left: -4%;
+ }
 }
 
 

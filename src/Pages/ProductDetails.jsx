@@ -3,21 +3,22 @@ import Layout from "../Components/Layout/Layout";
 import axios from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import { useCart } from "../context/Cart";
+import ProductDetailsComponent from "../Components/ProductDetailComponent";
+import Loader from "../Components/Layout/Loader";
 
 const ProductDetails = () => {
   // const [photo, setPhoto] = useState("");
-  const [cart, setCart] = useCart();
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [id, setId] = useState("");
+  // eslint-disable-next-line 
   const [slug, setSlug] = useState("");
-  const [shipping, setShipping] = useState();
+  // const [shipping, setShipping] = useState();
   const params = useParams();
   const [relatedProducts, setRelatedProducts] = useState([]);
   const navigate = useNavigate();
-  const [product, setProduct] = useState([]);
+  const [product, setProduct] = useState();
 
   const getTheProduct = async () => {
     try {
@@ -68,33 +69,14 @@ const ProductDetails = () => {
 
   return (
     <Layout>
-      <div className="row container m-2">
-        <div className="col-md-6 Product-Detail" style={{ marginTop: '40px', height: '400px',}}>
-          <img className="Product-Image"
-            
-            style={{border: '1px solid gray', borderRadius: '2px'}}
-            width={"436px"}
-            height={'400px'}
-            src={`${process.env.REACT_APP_API}/api/v1/products/get-photo/${id}`}
-            alt=""
-          />
-        </div>
-        <div className="col-md-6" style={{ fontWeight: "bold", width: '100%', height: 'auto', marginTop: '20px', padding: '20px', gap: '10px'}}>
-          <h1 style={{textDecoration: 'underline'}} className="text-center">Product Details</h1>
-          <div>
-            <h5>Product Name: {name}</h5>
-            <h6>
-              Price:{" "}
-              {price.toLocaleString("en-IN", {
-                style: "currency",
-                currency: "INR",
-              })}
-            </h6>
-          </div>
-          {/* <p>Category: {category?.name}</p> */}
-          <p>Product Description: {description}</p>
-          <button onClick={() => {setCart([...cart, product]); toast.success('Item Added To Cart'); localStorage.setItem('cart', JSON.stringify([...cart, product]))}} className="btn btn-secondary mb-2">Add To Cart</button>
-        </div>
+      <div className="row wrapper" style={{ minHeight: '90vh'}} >
+        {
+          product ? (
+            <ProductDetailsComponent name={name} price={price} description={description} rating={product?.rating} image={`${process.env.REACT_APP_API}/api/v1/products/get-photo/${id}`} />
+          ) : (
+            <Loader />
+          )
+        }
       </div>
       <hr style={{borderColor: '#000', borderWidth: '2px', width: '100%' }} />
 

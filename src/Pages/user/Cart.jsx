@@ -125,24 +125,24 @@ const Cart = () => {
                 : "Your Cart Is Empty"}
             </h5>
           </div>
-          <div className="row">
-            <div className=" col-md-9 mt-3 ">
+          <div className="col-md-12 Home">
+            <div className="d-flex flex-wrap gap-20 ">
               {cart?.map((p) => (
                 <div
-                  className="row mb-2 p-2 card flex-row"
+                  className="card mb-2 p-2 cart-card"
                   key={p._id}
-                  style={{ border: "2px solid gray", borderRadius: "3px" }}
+                  style={{ display: 'flex', width: '40%', flexDirection: 'row', border: "2px solid gray", borderRadius: "3px", alignItems: 'center',  gap: 20, height: '100%' }}
                 >
-                  <div className="flex-0.5">
+                  <div className="flex">
                     <img
-                      className="card-img-top"
+                      className="card-img-top "
                       src={`${process.env.REACT_APP_API}/api/v1/products/get-photo/${p._id}`}
                       alt={p.name}
                       height={"200px"}
                       width={"200px"}
                     />
                   </div>
-                  <div className="flex-0.5">
+                  <div className="flex">
                     <h4 className="mt-2">{p.name}</h4>
                     <p>{p.description.slice(0, 30)}...</p>
                     <h6 className="text-primary">
@@ -163,7 +163,9 @@ const Cart = () => {
               ))}
             </div>
           </div>
-          <div className="col-md-6 mt-3">
+        </div>
+        <div className="row" >
+        <div className="col-md-12 mt-3">
             <h4 className="text-center">Cart Summary</h4>
             <hr style={{ borderWidth: "2px", borderColor: "#000" }} />
             {!cart.length ? (
