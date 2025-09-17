@@ -1,61 +1,115 @@
-import React, { useState, useEffect } from 'react'
-import AdminMenu from './AdminMenu'
-import Layout from '../../Components/Layout/Layout'
-import axios from 'axios'
-import toast from 'react-hot-toast'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from "react";
+import AdminMenu from "./AdminMenu";
+import Layout from "../../Components/Layout/Layout";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
+import {
+  Grid,
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  Box,
+} from "@mui/material";
 
 const Products = () => {
+  const [product, setProduct] = useState([]);
 
-    const [product, setProduct] = useState([]);
+  const getProducts = async () => {
+    try {
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/v1/products/get-product`
+      );
 
-    const getProducts = async () => {
-    
-        try {
-         const {data} = await axios.get(`${process.env.REACT_APP_API}/api/v1/products/get-product`);
-         
-         if(data?.success) {
-           setProduct(data?.products);
-         console.log(product)
-         } 
-        } catch (error) {
-            toast.error("Error While Getting Products")
-        }
-       }
-     
-     
-       useEffect(() => {
-         getProducts();
-         // eslint-disable-next-line
-       }, [])
+      if (data?.success) {
+        setProduct(data?.products);
+      }
+    } catch (error) {
+      toast.error("Error While Getting Products");
+    }
+  };
+
+  useEffect(() => {
+    getProducts();
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <Layout>
-        <div className="row">
-            <div className="col-md-3">
-              <AdminMenu/>
-            </div>
-            <div className="col-md-9">
-                <h1 className="text-center">All Products</h1>
-                <div className="d-flex flex-wrap" style={{ minHeight: '90vh'}}>
-                {product.map(p => (
-                <Link to={`/dashboard/admin/products/${p?.slug}`} style={{ textDecoration: 'none', color: 'black'}} >
-                <div className="card m-2" style={{height: '21rem', maxWidth: '15rem'}}>
-                <img className="card-img-top" src={`${process.env.REACT_APP_API}/api/v1/products/get-photo/${p._id}`} alt={p.name} height='50%' width={'50%'} />
-                <div className="card-body">
-                  <h5 className="card-title">{p.name}</h5>
-                  <h5 className='price'>{p.price} Rs.</h5>
-                  <p className="card-text">{p.description.slice(0, 30)}...</p>
-                </div>
-              </div>
-                </Link>
-             ))}
-             
-            </div>
-            </div>
-        </div>
-    </Layout>
-  )
-}
+      <Box sx={{ minHeight: "100vh", bgcolor: "#f9fafb", p: 3 }}>
+        <Grid container spacing={3}>
+          {/* Sidebar */}
+          <Grid item xs={12} md={3}>
+            <Card sx={{ p: 2, borderRadius: 3, boxShadow: 2 }}>
+              <AdminMenu />
+            </Card>
+          </Grid>
 
-export default Products
+          {/* Main Content */}
+          <Grid item xs={12} md={9}>
+            <Typography
+              variant="h5"
+              fontWeight="bold"
+              gutterBottom
+              textAlign={{ xs: "center", md: "left" }}
+            >
+              All Products
+            </Typography>
+
+            <Grid container spacing={3}>
+              {product.map((p) => (
+                <Grid item xs={12} sm={6} md={4} lg={3} key={p._id}>
+                  <Link
+                    to={`/dashboard/admin/products/${p?.slug}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <Card
+                      sx={{
+                        height: "100%",
+                        borderRadius: 3,
+                        boxShadow: 2,
+                        transition: "0.3s",
+                        "&:hover": { boxShadow: 6, transform: "translateY(-3px)" },
+                      }}
+                    >
+                      <CardMedia
+                        component="img"
+                        height="180"
+                        image={`${process.env.REACT_APP_API}/api/v1/products/get-photo/${p._id}`}
+                        alt={p.name}
+                        sx={{ objectFit: "contain", bgcolor: "#f1f5f9" }}
+                      />
+                      <CardContent>
+                        <Typography
+                          variant="h6"
+                          fontWeight="bold"
+                          gutterBottom
+                          noWrap
+                        >
+                          {p.name}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          gutterBottom
+                        >
+                          {p.description?.slice(0, 40)}...
+                        </Typography>
+                        <Typography variant="subtitle1" color="primary" fontWeight="bold">
+                          {p.price} Rs.
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </Grid>
+              ))}
+            </Grid>
+          </Grid>
+        </Grid>
+      </Box>
+    </Layout>
+  );
+};
+
+export default Products;

@@ -1,64 +1,123 @@
-import React from 'react';
+import React from "react";
 import {
-  Box,
   Grid,
+  Card,
+  CardContent,
+  CardMedia,
   Typography,
   Button,
-  Paper,
-  Container,
-  Rating
-} from '@mui/material';
-import { styled } from '@mui/system';
+  Box,
+  Rating,
+  Divider,
+} from "@mui/material";
 
-const ImageContainer = styled(Box)(({ theme }) => ({
-  width: '100%',
-  height: 'auto',
-  [theme.breakpoints.up('sm')]: {
-    maxWidth: '500px',
-  },
-}));
-
-const ProductDetailsComponent = ({name, price, description, rating, image}) => {
-  rating = 4;
-
+const ProductDetailsComponent = ({ name, price, description, rating, image }) => {
   return (
-    <Container maxWidth="xl" sx={{backgroundColor: 'linear-gradient(0deg, rgba(34,195,178,1) 13%, rgba(45,170,253,1) 71%)'}}>
-      <Paper elevation={3} sx={{ padding: 2, marginTop: 4, backgroundColor: 'linear-gradient(0deg, rgba(34,195,178,1) 13%, rgba(45,170,253,1) 71%)' }}>
-        <Grid container spacing={4}>
-          <Grid item xs={12} sm={6}>
-            <ImageContainer component="img" style={{height: '80%'}} src={image} alt={name} />
-            {
-                rating && (
-                    <Rating value={rating} readOnly />
-                )
-            }
-            <Typography variant="h6" color="textSecondary" sx={{ marginY: 2 }}>
-              {price?.toLocaleString("en-IN", {
-                      style: "currency",
-                      currency: "INR",
-                    })}
-            </Typography>
-          </Grid>
-          <Grid item xs={12} sm={6} >
-            <Typography variant="h4" component="h1">
+    <Card
+      sx={{
+        p: { xs: 2, md: 3 },
+        borderRadius: 4,
+        boxShadow: 5,
+        backgroundColor: "#fff",
+        maxWidth: "1100px",
+        margin: "auto",
+      }}
+    >
+      <Grid container spacing={3} alignItems="center">
+        {/* Product Image */}
+        <Grid item xs={12} md={6}>
+          <CardMedia
+            component="img"
+            image={image}
+            alt={name}
+            sx={{
+              borderRadius: 3,
+              width: "100%",
+              height: { xs: 250, sm: 320, md: 420 },
+              objectFit: "fill",
+              boxShadow: 2,
+            }}
+          />
+        </Grid>
+
+        {/* Product Info */}
+        <Grid item xs={12} md={6}>
+          <CardContent sx={{ p: { xs: 1, md: 2 } }}>
+            <Typography
+              variant="h5"
+              fontWeight="bold"
+              gutterBottom
+              sx={{ fontSize: { xs: "1.3rem", md: "1.75rem" } }}
+            >
               {name}
             </Typography>
-            <Typography variant="body1" paragraph sx={{height: '80vh', overflowY: "auto", paddingBottom: '5%'}}>
+
+            <Typography
+              variant="h6"
+              color="primary"
+              fontWeight="bold"
+              gutterBottom
+              sx={{ fontSize: { xs: "1.1rem", md: "1.4rem" } }}
+            >
+              {price.toLocaleString("en-IN", {
+                style: "currency",
+                currency: "INR",
+              })}
+            </Typography>
+
+            <Divider sx={{ my: 2 }} />
+
+            <Typography
+              variant="body1"
+              color="text.secondary"
+              sx={{ mb: 2, lineHeight: 1.6, fontSize: { xs: "0.9rem", md: "1rem" } }}
+            >
               {description}
             </Typography>
-            <Box className="p-details d-flex flex-row" component="div" style={{backgroundColor: "yellow", alignItems: 'center', justifyContent: 'space-between', height: 'auto', padding: 10, width: '100%', alignSelf: 'center',}} >
-            <Button variant="contained" color="warning" sx={{width: 'auto', flex: 0.45}} >
-              Wishlist
-            </Button>
-            <Button variant="contained" color="primary" sx={{flex: 0.45}} >
-              Buy Now
-            </Button>
+
+            {/* Rating */}
+            {rating && (
+              <Box display="flex" alignItems="center" mb={2}>
+                <Rating value={rating} precision={0.5} readOnly />
+                <Typography variant="body2" sx={{ ml: 1 }}>
+                  {rating}/5
+                </Typography>
+              </Box>
+            )}
+
+            {/* Action Buttons */}
+            <Box display="flex" flexWrap="wrap" gap={2}>
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                sx={{
+                  borderRadius: 3,
+                  textTransform: "none",
+                  px: { xs: 3, md: 4 },
+                  flex: { xs: 1, sm: "auto" },
+                }}
+              >
+                Add to Cart
+              </Button>
+              <Button
+                variant="outlined"
+                color="secondary"
+                size="large"
+                sx={{
+                  borderRadius: 3,
+                  textTransform: "none",
+                  px: { xs: 3, md: 4 },
+                  flex: { xs: 1, sm: "auto" },
+                }}
+              >
+                Buy Now
+              </Button>
             </Box>
-          </Grid>
+          </CardContent>
         </Grid>
-      </Paper>
-          
-    </Container>
+      </Grid>
+    </Card>
   );
 };
 

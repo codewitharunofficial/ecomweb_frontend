@@ -3,10 +3,20 @@ import AdminMenu from "./AdminMenu";
 import Layout from "../../Components/Layout/Layout";
 import toast from "react-hot-toast";
 import axios from "axios";
-import { Select } from "antd";
 import { useNavigate } from "react-router-dom";
-
-const { Option } = Select;
+import {
+  Box,
+  Grid,
+  Typography,
+  TextField,
+  Button,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  Card,
+  CardMedia,
+} from "@mui/material";
 
 const AddProduct = () => {
   const navigate = useNavigate();
@@ -19,8 +29,7 @@ const AddProduct = () => {
   const [category, setCategory] = useState("");
   const [shipping, setShipping] = useState("");
 
-  //getting all category
-
+  // Fetch categories
   const getAllCategories = async () => {
     try {
       const { data } = await axios.get(
@@ -28,10 +37,9 @@ const AddProduct = () => {
       );
       if (data?.success) {
         setCategories(data?.category);
-        console.log(categories);
       }
     } catch (error) {
-      toast.error("Something Went Wrong While Fetching Categories");
+      toast.error("Something went wrong while fetching categories");
     }
   };
 
@@ -40,126 +48,161 @@ const AddProduct = () => {
     // eslint-disable-next-line
   }, []);
 
-  const handleSubmit = async(e) => {
-           e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const productData = new FormData();
+      productData.append("name", name);
+      productData.append("description", description);
+      productData.append("price", price);
+      productData.append("quantity", quantity);
+      productData.append("category", category);
+      productData.append("photo", photo);
 
-           try {
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_API}/api/v1/products/new-product`,
+        productData
+      );
 
-            const productData = new FormData();
-            productData.append('name', name)
-            productData.append('description', description)
-            productData.append('price', price)
-            productData.append('quantity', quantity)
-            productData.append('category', category)
-            productData.append('photo', photo)
-
-            const {data} = await axios.post(`${process.env.REACT_APP_API}/api/v1/products/new-product`, productData);
-
-            if(data?.success) {
-                toast.success(data?.message)
-                navigate('/dashboard/admin/products')
-            } else {
-                toast.error(data?.message)
-            }
-            
-           } catch (error) {
-            toast.error("Something Went Wrong While Creating New Product")
-           }
-  }
-
-  
-  
+      if (data?.success) {
+        toast.success(data?.message);
+        navigate("/dashboard/admin/products");
+      } else {
+        toast.error(data?.message);
+      }
+    } catch (error) {
+      toast.error("Something went wrong while creating new product");
+    }
+  };
 
   return (
     <Layout>
-      <div className="container-fluid m-3 p-3">
-        <div className="row">
-          <div className="col-md-3">
+      <Box sx={{ p: 3 }}>
+        <Grid container spacing={3}>
+          {/* Sidebar */}
+          <Grid item xs={12} md={3}>
             <AdminMenu />
-          </div>
-          <div className="col-md-9">
-            <h2>Add Product</h2>
-            <div className="m-1">
-              <Select
-                bordered={true}
-                placeholder="Select a Category"
-                size="large"
-                showSearch
-                className="form-select mb-3 w-75"
-                onChange={(value) => {
-                  setCategory(value);
-                }}
+          </Grid>
+
+          {/* Form Section */}
+          <Grid item xs={12} md={9}>
+            <Typography variant="h4" fontWeight="bold" gutterBottom>
+              Add Product
+            </Typography>
+
+            <Box
+              component="form"
+              onSubmit={handleSubmit}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 3,
+                maxWidth: "600px",
+              }}
+            >
+              {/* Category */}
+              <FormControl fullWidth>
+                <InputLabel>Select Category</InputLabel>
+                <Select
+                  value={category}
+                  label="Select Category"
+                  onChange={(e) => setCategory(e.target.value)}
+                >
+                  {categories.map((c) => (
+                    <MenuItem key={c._id} value={c._id}>
+                      {c.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              {/* Upload Photo */}
+              <Button
+                variant="outlined"
+                component="label"
+                color="primary"
               >
-                {categories.map((e) => (
-                  <Option key={e._id} value={e._id}>
-                    {e.name}
-                  </Option>
-                ))}
-              </Select>
-              <div className="mb-3">
-                <label className="btn btn-outline-success">
-                  <input
-                    type="file"
-                    name="photo"
-                    accept="image/*"
-                    onChange={(e) => setPhoto(e.target.files[0])}
+                Upload Product Image
+                <input
+                  hidden
+                  accept="image/*"
+                  type="file"
+                  onChange={(e) => setPhoto(e.target.files[0])}
+                />
+              </Button>
+
+              {/* Preview */}
+              {photo && (
+                <Card sx={{ maxWidth: 300 }}>
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={URL.createObjectURL(photo)}
+                    alt="Product Preview"
                   />
-                </label>
-              </div>
+                </Card>
+              )}
 
-              <div className="mb-3">
-                {photo && (
-                  <div className="">
-                    <img
-                      src={URL.createObjectURL(photo)}
-                      alt=""
-                      height={"200px"}
-                      className="img img-responsive"
-                    />
-                  </div>
-                )}
-              </div>
+              {/* Inputs */}
+              <TextField
+                label="Product Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                fullWidth
+              />
+              <TextField
+                label="Price (₹)"
+                type="number"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                required
+                fullWidth
+              />
+              <TextField
+                label="Quantity"
+                type="number"
+                value={quantity}
+                onChange={(e) => setQuantiity(e.target.value)}
+                required
+                fullWidth
+              />
+              <TextField
+                label="Description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+                multiline
+                rows={3}
+                fullWidth
+              />
 
-              <div className="mb-3 w-75">
-              <form className='p-1' style={{width:'auto'}} >
-          <h3 className='text-center mb-2' style={{background:'black', fontFamily: "'Poppins', sans-serif", color:'white',textTransform: 'uppercase'}}>Create A New Product</h3>
-    <div className="form-group ">
-      <label htmlFor="inputPassword4">Quantity</label>
-      <input onChange={(e)=> setQuantiity(e.target.value)} required={true} value={quantity} type="number" className="form-control" placeholder="0-10" />
-    </div>
-    <div className="form-group ">
-    <label htmlFor="inputAddress">Price</label>
-    <input onChange={(e)=> setPrice(e.target.value)} required={true} value={price} type="number" className="form-control" placeholder="2999 Rs/-" />
-  </div>
-    <div className="form-group ">
-      <label htmlFor="inputCity">Name</label>
-      <input onChange={(e)=> setName(e.target.value)} required={true} value={name} placeholder='Product Name' type="text" className="form-control" />
-    </div>
-    <div className="form-group ">
-      <label htmlFor="productDescription">Description</label>
-      <input onChange={(e)=> setDescription(e.target.value)} required={true} value={description} placeholder='Description of the product' type="text" className="form-control" id="inputQuestion" />
-    </div>
-    <div className="form-group">
-      <label htmlFor="Shipping">Shipping</label>
-      <Select bordered={true}
-      placeholder="Select Shipping"
-      size="large"
-      className="form-select mmb-3"
-      onChange={(value) => setShipping(value)}
-      >
+              {/* Shipping */}
+              <FormControl fullWidth>
+                <InputLabel>Shipping</InputLabel>
+                <Select
+                  value={shipping}
+                  label="Shipping"
+                  onChange={(e) => setShipping(e.target.value)}
+                >
+                  <MenuItem value="0">No</MenuItem>
+                  <MenuItem value="1">Yes</MenuItem>
+                </Select>
+              </FormControl>
 
-<Option value='0'>No</Option>
-<Option value='1'>Yes</Option>
-
-      </Select>
-    </div>
-  <button onClick={handleSubmit} type="submit" className="btn btn-primary">Upload Product</button>
-</form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+              {/* Submit */}
+              <Button
+                variant="contained"
+                type="submit"
+                color="primary"
+                size="large"
+              >
+                Upload Product
+              </Button>
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
     </Layout>
   );
 };

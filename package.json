@@ -17,6 +17,7 @@
     "braintree-web-drop-in-react": "^1.2.1",
     "concurrently": "^8.2.1",
     "cors": "^2.8.5",
+    "lucide-react": "^0.544.0",
     "moment": "^2.29.4",
     "node-emoji": "^2.1.0",
     "node-polyfill-webpack-plugin": "^2.0.1",

@@ -271,6 +271,7 @@ const HomePage = () => {
               ) : (
                 products.map((p) => (
                   <ProductCard
+                    key={p._id}
                     name={p?.name}
                     category={p?.category}
                     image={`${process.env.REACT_APP_API}/api/v1/products/get-photo/${p._id}`}
@@ -284,28 +285,28 @@ const HomePage = () => {
                   />
                 ))
               )}
-            <div
-              className="loadmore d-flex text-center w-sm-100"
-              style={{
-                width: "80%",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              {products && products.length < total && (
-                <button
-                  className="btn btn-primary mb-2 "
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setPage(page + 1);
-                  }}
-                >
-                  {" "}
-                  {loading ? <Loader /> : "Load More"}{" "}
-                </button>
-              )}
-            </div>
+              <div
+                className="loadmore d-flex text-center w-sm-100"
+                style={{
+                  width: "80%",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {products && products.length < total && (
+                  <button
+                    className="btn btn-primary mb-2 "
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setPage(page + 1);
+                    }}
+                  >
+                    {" "}
+                    {loading ? <Loader /> : "Load More"}{" "}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>

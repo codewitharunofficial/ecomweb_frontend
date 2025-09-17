@@ -5,6 +5,15 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import ProductDetailsComponent from "../Components/ProductDetailComponent";
 import Loader from "../Components/Layout/Loader";
+import {
+  Grid,
+  Card,
+  CardMedia,
+  CardContent,
+  Typography,
+  Box,
+  Divider,
+} from "@mui/material";
 
 const ProductDetails = () => {
   // const [photo, setPhoto] = useState("");
@@ -69,7 +78,7 @@ const ProductDetails = () => {
 
   return (
     <Layout>
-      <div className="row wrapper" style={{ minHeight: '90vh'}} >
+      <div className="row wrapper" style={{ minHeight: '90vh' }} >
         {
           product ? (
             <ProductDetailsComponent name={name} price={price} description={description} rating={product?.rating} image={`${process.env.REACT_APP_API}/api/v1/products/get-photo/${id}`} />
@@ -78,44 +87,83 @@ const ProductDetails = () => {
           )
         }
       </div>
-      <hr style={{borderColor: '#000', borderWidth: '2px', width: '100%' }} />
+      <hr style={{ borderColor: '#000', borderWidth: '2px', width: '100%' }} />
 
-      <div className="row container m-2">
-        <h4 className="text-center">Similar Products</h4>
-        <div className="col-md-12">
-          {!relatedProducts ? (
-            <p>No Similar Products Found</p>
+      <Box sx={{ my: 4, px: { xs: 2, sm: 4 } }}>
+        <Typography
+          variant="h5"
+          align="center"
+          gutterBottom
+          sx={{ fontWeight: "bold", mb: 3 }}
+        >
+          Similar Products
+        </Typography>
+        <Divider sx={{ mb: 3, maxWidth: 200, mx: "auto" }} />
+
+        <Grid container spacing={3} justifyContent="center">
+          {!relatedProducts || relatedProducts.length === 0 ? (
+            <Typography variant="body1" color="text.secondary">
+              No Similar Products Found
+            </Typography>
           ) : (
             relatedProducts.map((p) => (
-              <div className="card m-2 col-md-3" key={p._id}>
-                <Link to={`/products/${p.slug}`}>
-                  <div
-                    style={{ borderBottom: "1px solid gray", padding: "10px" }}
-                  >
-                    <img
-                    onClick={() => navigate(`/products/${p.slug}`)}
-                      className="card-img-top p-2"
-                      src={`${process.env.REACT_APP_API}/api/v1/products/get-photo/${p._id}`}
-                      alt={p.name}
-                      height={"200px"}
-                    />
-                  </div>
-                </Link>
-                <div className="card-body">
-                  <h5 className="card-title">{p.name.slice(0, 15)}...</h5>
-                  <h5 className="price">
-                    {p.price.toLocaleString("en-IN", {
-                      style: "currency",
-                      currency: "INR",
-                    })}
-                  </h5>
-                  <p className="card-text">{p.description.slice(0, 30)}...</p>
-                </div>
-              </div>
+              <Grid item xs={12} sm={6} md={3} key={p._id}>
+                <Card
+                  sx={{
+                    borderRadius: 3,
+                    boxShadow: 3,
+                    transition: "0.3s",
+                    "&:hover": { boxShadow: 6, transform: "translateY(-5px)" },
+                    cursor: "pointer",
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                  onClick={() => navigate(`/products/${p.slug}`)}
+                >
+                  {/* Product Image */}
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={`${process.env.REACT_APP_API}/api/v1/products/get-photo/${p._id}`}
+                    alt={p.name}
+                    sx={{ objectFit: "cover", borderBottom: "1px solid #eee" }}
+                  />
+
+                  {/* Product Info */}
+                  <CardContent sx={{ flexGrow: 1 }}>
+                    <Typography
+                      variant="subtitle1"
+                      fontWeight="bold"
+                      gutterBottom
+                      noWrap
+                    >
+                      {p.name}
+                    </Typography>
+                    <Typography
+                      variant="h6"
+                      color="primary"
+                      gutterBottom
+                    >
+                      {p.price.toLocaleString("en-IN", {
+                        style: "currency",
+                        currency: "INR",
+                      })}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ fontSize: "0.9rem" }}
+                    >
+                      {p.description.slice(0, 50)}...
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
             ))
           )}
-        </div>
-      </div>
+        </Grid>
+      </Box>
     </Layout>
   );
 };
