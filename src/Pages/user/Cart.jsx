@@ -1,30 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Layout from "../../Components/Layout/Layout";
 import { useCart } from "../../context/Cart";
 import { useAuth } from "../../context/auth";
-import { redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import * as emoji from "node-emoji";
 import toast from "react-hot-toast";
-// import DropIn from 'braintree-web-drop-in-react'
 import axios from "axios";
 import Loader from "../../Components/Layout/Loader";
-// import Razorpay from 'razorpay';
+import {
+  Box,
+  Grid,
+  Card,
+  CardMedia,
+  CardContent,
+  Typography,
+  Button,
+  Divider,
+  Paper,
+} from "@mui/material";
 
 const Cart = () => {
   const [cart, setCart] = useCart();
   const [auth] = useAuth();
-  const [loading, setLoading] = useState(false);
-  const [amount, setAmount] = useState("");
   const [initiating, setInitiating] = useState(false);
-
-  const [paymentId, setPaymentId] = useState("");
-
   const navigate = useNavigate();
 
   const removeCartItem = (pid) => {
     try {
       let myCart = [...cart];
-      let index = myCart.findIndex((Item) => Item._id === pid);
+      let index = myCart.findIndex((item) => item._id === pid);
       myCart.splice(index, 1);
       setCart(myCart);
       toast.success("Item Removed From Cart");
@@ -34,12 +38,10 @@ const Cart = () => {
     }
   };
 
-  //calculate total price for cart items
-
   const totalPrice = () => {
     try {
       let total = 0;
-      cart?.map((item) => (total = total + item.price));
+      cart?.forEach((item) => (total += item.price));
       return total.toLocaleString("en-IN", {
         style: "currency",
         currency: "INR",
@@ -54,27 +56,24 @@ const Cart = () => {
     const {
       data: { key },
     } = await axios.get(`${process.env.REACT_APP_API}/api/get-key`);
+
     const {
-      data: { order },
-      data: { Order },
+      data: { order, Order },
     } = await axios.post(
       `${process.env.REACT_APP_API}/api/v1/payment/create-order`,
       { cart, auth }
     );
-    //  const {data} = await axios.post(`${process.env.REACT_APP_API}/api/v1/payment/create-order`, {cart, auth});
-    console.log(Order, order);
+
     setInitiating(false);
+
     const options = {
-      key: key,
-      amount: amount,
+      key,
+      amount: order.amount,
       currency: "INR",
       name: "Shopyse",
       description: "Test Transaction",
-      image: "",
       order_id: order.id,
       handler: async (response) => {
-        setPaymentId(response.razorpay_payment_id);
-        //  console.log(response);
         const verifyUrl = `${process.env.REACT_APP_API}/api/v1/payment/confirm-payment`;
         const { data } = await axios.post(verifyUrl, {
           response,
@@ -82,11 +81,10 @@ const Cart = () => {
         });
         if (data?.success) {
           toast.success(
-            data?.message + `reference No. ${data?.payment?.paymentId}`
+            data?.message + ` Reference No. ${data?.payment?.paymentId}`
           );
           localStorage.removeItem("cart");
           navigate(`/dashboard/user/orders`);
-          console.log(paymentId);
         }
       },
       prefill: {
@@ -97,130 +95,149 @@ const Cart = () => {
       notes: {
         address: auth?.user?.address,
       },
-      theme: {
-        color: "#121212",
-      },
+      theme: { color: "#121212" },
     };
 
     const razor = new window.Razorpay(options);
     razor.open();
   };
 
-  console.log(cart);
   return (
-    <Layout title={'Shopease - Cart'} >
-      <div className="container">
-        <div className="row">
-          <div className="col-md-12">
-            <h3 className="text-center bg-secondary text-white p-1 mt-2">
-              {auth?.token ? (
-                emoji.emojify(`Hello ${auth.user.name} :smile:!!`)
-              ) : (
-                <p>You're Not Logged in, Please Login To Checkout</p>
-              )}
-            </h3>
-            <h5 className="text-center">
-              {cart?.length > 0
-                ? `You have ${cart.length} items in your Cart`
-                : "Your Cart Is Empty"}
-            </h5>
-          </div>
-          <div className="col-md-12 Home">
-            <div className="d-flex flex-wrap gap-20 ">
-              {cart?.map((p) => (
-                <div
-                  className="card mb-2 p-2 cart-card"
-                  key={p._id}
-                  style={{ display: 'flex', width: '40%', flexDirection: 'row', border: "2px solid gray", borderRadius: "3px", alignItems: 'center',  gap: 20, height: '100%' }}
-                >
-                  <div className="flex">
-                    <img
-                      className="card-img-top "
-                      src={`${process.env.REACT_APP_API}/api/v1/products/get-photo/${p._id}`}
-                      alt={p.name}
-                      height={"200px"}
-                      width={"200px"}
-                    />
-                  </div>
-                  <div className="flex">
-                    <h4 className="mt-2">{p.name}</h4>
-                    <p>{p.description.slice(0, 30)}...</p>
-                    <h6 className="text-primary">
-                      Price:{" "}
-                      {p.price.toLocaleString("en-IN", {
-                        style: "currency",
-                        currency: "INR",
-                      })}
-                    </h6>
-                    <button
-                      onClick={() => removeCartItem(p._id)}
-                      className="btn btn-danger"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="row" >
-        <div className="col-md-12 mt-3">
-            <h4 className="text-center">Cart Summary</h4>
-            <hr style={{ borderWidth: "2px", borderColor: "#000" }} />
-            {!cart.length ? (
-              <h4 className="text-center">
-                No Items To Show {emoji.emojify(`:robot:`)}
-              </h4>
-            ) : (
-              <h5>Total: {totalPrice()}</h5>
-            )}
-            {cart & auth?.user?.address ? (
-              <div className="col-md-3 cart-button">
-                {auth?.user?.address}
-                <button
-                  className="btn btn-warning mt-2"
-                  onClick={() =>
-                    navigate("/dashboard/user/myprofile", {
-                      state: "/user/cart",
-                    })
-                  }
-                >
-                  Update
-                </button>
-              </div>
-            ) : cart.length > 0 && auth?.user ? (
-              <button
-                className="btn btn-warning mt-2"
+    <Layout title="Shopease - Cart">
+      <Box sx={{ p: { xs: 2, md: 4 } }}>
+        <Typography
+          variant="h5"
+          align="center"
+          sx={{ bgcolor: "secondary.main", color: "white", p: 1, borderRadius: 2 }}
+        >
+          {auth?.token
+            ? emoji.emojify(`Hello ${auth.user.name} :smile:!!`)
+            : "You're Not Logged in, Please Login To Checkout"}
+        </Typography>
+
+        <Typography align="center" sx={{ mt: 1, mb: 3 }} variant="subtitle1">
+          {cart?.length > 0
+            ? `You have ${cart.length} item(s) in your Cart`
+            : "Your Cart Is Empty"}
+        </Typography>
+
+        <Grid container spacing={2}>
+          {cart?.map((p) => (
+            <Grid item xs={12} md={6} key={p._id}>
+              <Card
+                sx={{
+                  display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
+                  alignItems: "center",
+                  p: 2,
+                  borderRadius: 2,
+                  boxShadow: 3,
+                }}
+              >
+                <CardMedia
+                  component="img"
+                  sx={{
+                    width: { xs: "100%", sm: 160 },
+                    height: { xs: 180, sm: 160 },
+                    objectFit: "cover",
+                    borderRadius: 2,
+                  }}
+                  image={`${process.env.REACT_APP_API}/api/v1/products/get-photo/${p._id}`}
+                  alt={p.name}
+                />
+                <CardContent sx={{ flex: 1 }}>
+                  <Typography variant="h6">{p.name}</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {p.description.slice(0, 50)}...
+                  </Typography>
+                  <Typography
+                    variant="subtitle1"
+                    color="primary"
+                    sx={{ mt: 1, mb: 1 }}
+                  >
+                    Price:{" "}
+                    {p.price.toLocaleString("en-IN", {
+                      style: "currency",
+                      currency: "INR",
+                    })}
+                  </Typography>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => removeCartItem(p._id)}
+                  >
+                    Remove
+                  </Button>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+
+        {/* Cart Summary */}
+        <Paper
+          elevation={4}
+          sx={{
+            mt: 4,
+            p: 3,
+            borderRadius: 3,
+            maxWidth: 500,
+            mx: "auto",
+            textAlign: "center",
+          }}
+        >
+          <Typography variant="h5" gutterBottom>
+            Cart Summary
+          </Typography>
+          <Divider sx={{ my: 2 }} />
+
+          {!cart.length ? (
+            <Typography>
+              No Items To Show {emoji.emojify(`:robot:`)}
+            </Typography>
+          ) : (
+            <Typography variant="h6">Total: {totalPrice()}</Typography>
+          )}
+
+          {cart.length > 0 && auth?.user?.address && (
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="body2">{auth?.user?.address}</Typography>
+              <Button
+                variant="contained"
+                color="warning"
+                sx={{ mt: 1 }}
                 onClick={() =>
                   navigate("/dashboard/user/myprofile", { state: "/user/cart" })
                 }
               >
-                Update
-              </button>
-            ) : (
-              <button
-                className="btn btn-success mt-2"
-                hidden={auth.token}
-                onClick={() => navigate("/user/login", { state: "/user/cart" })}
-              >
-                Login to proceed
-              </button>
-            )}
+                Update Address
+              </Button>
+            </Box>
+          )}
 
-            <div className="mt-2">
-              <button
-                type="submit"
-                hidden={!cart.length || !auth.token}
-                onClick={checkoutHandler}
-                className="btn btn-primary"
-              >
-                {initiating ? <Loader /> : "Checkout"}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+          {!auth?.token && cart.length > 0 && (
+            <Button
+              variant="contained"
+              color="success"
+              sx={{ mt: 2 }}
+              onClick={() => navigate("/user/login", { state: "/user/cart" })}
+            >
+              Login to proceed
+            </Button>
+          )}
+
+          {cart.length > 0 && auth?.token && (
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2 }}
+              onClick={checkoutHandler}
+            >
+              {initiating ? <Loader /> : "Checkout"}
+            </Button>
+          )}
+        </Paper>
+      </Box>
     </Layout>
   );
 };

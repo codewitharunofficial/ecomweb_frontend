@@ -9,56 +9,79 @@ import { FaShopify } from 'react-icons/fa';
 // // import {Price} from '../Components/Layout/Price';
 import { useSearch } from "../context/search";
 import { Link } from "react-router-dom";
+import { Card, CardContent, CardMedia, Grid, Typography } from "@mui/material";
 
 
 const SearchResults = () => {
 
- const [values, setValues] = useSearch();
- 
- 
+  const [values, setValues] = useSearch();
+
+
 
   return (
     <Layout title="Ecommerce - Search-Results">
 
-<h1 className="text-center mb-3" style={{ color: 'black'}}><Link className="navbar-brand" style={{ color: 'black', fontFamily: 'Playfair Display , serif', fontSize: '24px'}} to="/"> <FaShopify />ShopEase</Link></h1>
+      <h1 className="text-center mb-3" style={{ color: 'black' }}><Link className="navbar-brand" style={{ color: 'black', fontFamily: 'Playfair Display , serif', fontSize: '24px' }} to="/"> <FaShopify />ShopEase</Link></h1>
 
-            <h3 className="text-center">{values?.results?.searchedResults.length < 1 ? `No Results Found For ${values.keyword}` : `Found ${values.results.searchedResults.length} results for '${values.keyword}'`}</h3>
+      <h3 className="text-center">{values?.results?.searchedResults.length < 1 ? `No Results Found For ${values.keyword}` : `Found ${values.results.searchedResults.length} results for '${values.keyword}'`}</h3>
 
-            <div className="row m-2">
-                <div className="col-md-3">
+      <div className="row m-2">
+        <div className="col-md-3">
 
-                </div>
-                <div className="col-md-9">
-                    <div className="d-flex flex-wrap">
-                { values?.results?.searchedResults.map((p) => (
-                
-                <div
-                  className="card m-3 col-md-3 " key={p._id}
+        </div>
+        <div className="col-md-9">
+          <div className="d-flex flex-wrap">
+            {values?.results?.searchedResults.map((p) => (
+
+              <Grid mx={1} item xs={12} sm={6} md={4} lg={3} key={p._id}>
+                <Link
+                  to={`/dashboard/admin/products/${p?.slug}`}
+                  style={{ textDecoration: "none" }}
                 >
-                  <Link to={`/products/${p.slug}`} >
-                    <div style={{ borderBottom: '1px solid gray', padding: '10px'}}
->
-                  <img
-                    className="card-img-top p-2"
-                    src={`${process.env.REACT_APP_API}/api/v1/products/get-photo/${p._id}`}
-                    alt={p.name}
-                    height={'200px'}
-                                        />
-                  </div>
-                  </Link>
-                  <div className="card-body">
-                    <h5 className="card-title">{p.name.slice(0, 15)}...</h5>
-                    <h5 className="price">{p.price.toLocaleString("en-IN", { style:  "currency", currency: "INR"})}</h5>
-                    <p className="card-text">
-                      {p.description.slice(0, 30)}...
-                    </p>
-                  </div>
-                </div>
+                  <Card
+                    sx={{
+                      height: "100%",
+                      borderRadius: 3,
+                      boxShadow: 2,
+                      transition: "0.3s",
+                      "&:hover": { boxShadow: 6, transform: "translateY(-3px)" },
+                    }}
+                  >
+                    <CardMedia
+                      component="img"
+                      height="180"
+                      image={`${process.env.REACT_APP_API}/api/v1/products/get-photo/${p._id}`}
+                      alt={p.name}
+                      sx={{ objectFit: "contain", bgcolor: "#f1f5f9" }}
+                    />
+                    <CardContent>
+                      <Typography
+                        variant="h6"
+                        fontWeight="bold"
+                        gutterBottom
+                        noWrap
+                      >
+                        {p.name}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        gutterBottom
+                      >
+                        {p.description?.slice(0, 40)}...
+                      </Typography>
+                      <Typography variant="subtitle1" color="primary" fontWeight="bold">
+                        {p.price} Rs.
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </Grid>
             ))
-        }
+            }
+          </div>
         </div>
-        </div>
-                </div>
+      </div>
     </Layout>
   )
 }
