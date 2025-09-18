@@ -127,7 +127,7 @@ const ProductDetails = () => {
                     height="200"
                     image={`${process.env.REACT_APP_API}/api/v1/products/get-photo/${p._id}`}
                     alt={p.name}
-                    sx={{ objectFit: "cover", borderBottom: "1px solid #eee" }}
+                    sx={{ objectFit: "fill", borderBottom: "1px solid #eee" }}
                   />
 
                   {/* Product Info */}
