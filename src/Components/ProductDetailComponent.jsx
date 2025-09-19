@@ -10,8 +10,27 @@ import {
   Rating,
   Divider,
 } from "@mui/material";
+import { useCart } from "../context/Cart";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
-const ProductDetailsComponent = ({ name, price, description, rating, image }) => {
+const ProductDetailsComponent = ({ name, price, description, rating, image, }) => {
+
+  const [cart, setCart] = useCart();
+
+  const navigate = useNavigate();
+
+  const handleAddToCart = () => {
+    setCart((prevCart) => [...prevCart, { name, price, description, rating, image }]);
+    toast.success('Item Added To Cart');
+    localStorage.setItem('cart', JSON.stringify([...cart, { name, price, description, rating, image }]));
+  }
+
+  const handleBuyNow = () => {
+    setCart((prevCart) => [...prevCart, { name, price, description, rating, image }]);
+    navigate('/user/cart');
+  }
+
   return (
     <Card
       sx={{
@@ -97,6 +116,7 @@ const ProductDetailsComponent = ({ name, price, description, rating, image }) =>
                   px: { xs: 3, md: 4 },
                   flex: { xs: 1, sm: "auto" },
                 }}
+                onClick={() => handleAddToCart()}
               >
                 Add to Cart
               </Button>
@@ -110,6 +130,7 @@ const ProductDetailsComponent = ({ name, price, description, rating, image }) =>
                   px: { xs: 3, md: 4 },
                   flex: { xs: 1, sm: "auto" },
                 }}
+                onClick={() => handleBuyNow()}
               >
                 Buy Now
               </Button>

@@ -78,7 +78,7 @@ const ProductDetails = () => {
 
   return (
     <Layout>
-      <div className="row wrapper" style={{ minHeight: '90vh' }} >
+      <div className="row wrapper align-items-center justify-content-center" style={{ minHeight: '90vh' }} >
         {
           product ? (
             <ProductDetailsComponent name={name} price={price} description={description} rating={product?.rating} image={`${process.env.REACT_APP_API}/api/v1/products/get-photo/${id}`} />

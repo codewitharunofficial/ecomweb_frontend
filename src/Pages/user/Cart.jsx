@@ -142,7 +142,7 @@ const Cart = () => {
                     objectFit: "cover",
                     borderRadius: 2,
                   }}
-                  image={`${process.env.REACT_APP_API}/api/v1/products/get-photo/${p._id}`}
+                  image={p?.image || `${process.env.REACT_APP_API}/api/v1/products/get-photo/${p._id}`}
                   alt={p.name}
                 />
                 <CardContent sx={{ flex: 1 }}>
